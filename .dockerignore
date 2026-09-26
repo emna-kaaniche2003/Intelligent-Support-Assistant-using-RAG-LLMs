@@ -1,0 +1,26 @@
+# .dockerignore — support-ia
+# Règles évaluées dans l'ordre, la dernière règle qui matche gagne (comme
+# .gitignore) : on exclut large, puis on ré-inclut explicitement le seul
+# fichier de data_pipeline/raw/ requis au runtime (cf. CLAUDE.md § Architecture
+# — qr_technique__facturation__v1.json, chargé directement par
+# ingest_qr_technique.py:load_source(), lu au démarrage via retriever.py).
+
+venv312/
+.git/
+__pycache__/
+*.pyc
+.pytest_cache/
+credentials/
+.env
+qdrant_storage/
+notebooks
+tests/
+data_pipeline/raw/*
+
+# Ré-inclusion explicite : seul fichier de data_pipeline/raw/ requis au
+# runtime (baké dans l'image, cf. Dockerfile — couplé au vocabulaire BM25 de
+# la collection Qdrant "connaissances_modules", ne jamais modifier sans
+# ré-ingestion). La règle "data_pipeline/raw/*" ci-dessus n'exclut que le
+# contenu du dossier, pas le dossier lui-même : l'exception ci-dessous peut
+# donc reviver ce seul fichier.
+!data_pipeline/raw/qr_technique__facturation__v1.json

@@ -1,0 +1,329 @@
+{
+  "_meta": {
+    "version": "0.2.0",
+    "statut": "a_valider",
+    "genere_par": "Google AI Studio (prompt module_keywords) + relecture humaine a completer",
+    "date_generation": "2026-07-13",
+    "notes": "nb_tickets_estime sont des ordres de grandeur donnes par le LLM, PAS des comptages exacts. Les comptages officiels seront recalcules par le script de bucketing sur des donnees de validation.",
+    "revision_0_2_0": "Revision Comptabilite uniquement, issue d'une ANALYSE DE FREQUENCE des termes sur les 71 tickets Comptabilite non_categorise (session Claude Code), PAS d'une generation LLM. Motif : taux non_categorise Comptabilite a 73.2% (dictionnaire v0.1.0 sous-dimensionne pour ce module, keys existantes trop specifiques type bigramme exact). Ajouts valides par l'humain : elargissement flux_integration/cloture_situation/maintenance_comptes/declarations + nouveau sous-theme immobilisations. Financier et Facturation inchanges. Effet mesure : non_categorise Comptabilite 73.2% -> 40.2%.",
+    "nb_tickets_estime_note": "Les nb_tickets_estime sont des estimations LLM SAUF immobilisations (=2), qui est un COMPTAGE REEL issu du bucketing v0.2 sur le corpus (le mot-clé court 'immo'/'immob' ayant ete volontairement exclu pour eviter la collision avec 'immobilier', seuls les tickets au mot complet matchent)."
+  },
+  "modules": {
+    "Financier": {
+      "rapprochement_bancaire": {
+        "label": "Rapprochement et Trésorerie",
+        "keywords": [
+          "rapprochement",
+          "trésorerie",
+          "extrait bancaire",
+          "pointage",
+          "écart",
+          "frais bancaires"
+        ],
+        "variantes": [
+          "injection rapprochement",
+          "introduction rapprochement"
+        ],
+        "nb_tickets_estime": 10
+      },
+      "gestion_bordereaux": {
+        "label": "Bordereaux et Versements",
+        "keywords": [
+          "bordereau",
+          "versement",
+          "remise chèque",
+          "espèce",
+          "virement"
+        ],
+        "variantes": [
+          "bord n°",
+          "bordereau versement"
+        ],
+        "nb_tickets_estime": 5
+      },
+      "integration_paiements": {
+        "label": "Intégration des Paiements",
+        "keywords": [
+          "intégration",
+          "chèque non trouvé",
+          "règlement carte",
+          "TPE",
+          "virement non intégré"
+        ],
+        "variantes": [
+          "chèques non intégrés",
+          "règlement par carte"
+        ],
+        "nb_tickets_estime": 4
+      },
+      "avances": {
+        "label": "Gestion des Avances",
+        "keywords": [
+          "avance médecin",
+          "avance société",
+          "apurement"
+        ],
+        "variantes": [
+          "avances médecins",
+          "apurement de l'avance"
+        ],
+        "nb_tickets_estime": 5
+      },
+      "parametrage_financier": {
+        "label": "Paramétrage Financier",
+        "keywords": [
+          "création banque",
+          "configuration compte",
+          "RIB",
+          "paramétrage"
+        ],
+        "variantes": [
+          "créer une nouvelle banque",
+          "paramétrage du compte"
+        ],
+        "nb_tickets_estime": 3
+      },
+      "flux_sessions": {
+        "label": "Sessions et Flux",
+        "keywords": [
+          "réception session",
+          "message d'erreur virement",
+          "blocage session"
+        ],
+        "variantes": [
+          "réceptionner les sessions"
+        ],
+        "nb_tickets_estime": 1
+      }
+    },
+    "Facturation": {
+      "cloture_audit": {
+        "label": "Clôture et Audit",
+        "keywords": [
+          "clôture dossier",
+          "bloqué audit",
+          "erreur de validation",
+          "séjour en instance"
+        ],
+        "variantes": [
+          "clôture facture",
+          "problème audit",
+          "ré auditer"
+        ],
+        "nb_tickets_estime": 12
+      },
+      "rectifications_avoirs": {
+        "label": "Rectifications et Avoirs",
+        "keywords": [
+          "avoir",
+          "facture d'avoir",
+          "duplication dossier",
+          "annulation facture",
+          "annulation admission"
+        ],
+        "variantes": [
+          "duplication facture",
+          "avoir sur facture",
+          "annuler l'avoir"
+        ],
+        "nb_tickets_estime": 10
+      },
+      "modifications_donnees": {
+        "label": "Modifications de Données Patient/Intervenant",
+        "keywords": [
+          "changement nom",
+          "modification intervenant",
+          "changement organisme",
+          "corriger date naissance"
+        ],
+        "variantes": [
+          "nom du patient",
+          "modifier l'intervenant",
+          "changement de nom"
+        ],
+        "nb_tickets_estime": 25
+      },
+      "prise_en_charge": {
+        "label": "Prise en Charge et Forfaits",
+        "keywords": [
+          "PEC",
+          "CNAM",
+          "forfait",
+          "ticket modérateur",
+          "plafond société",
+          "ajustement"
+        ],
+        "variantes": [
+          "montant forfait",
+          "application forfait",
+          "extra forfait"
+        ],
+        "nb_tickets_estime": 8
+      },
+      "fiscalite_facturation": {
+        "label": "Fiscalité Facturation",
+        "keywords": [
+          "TVA",
+          "timbre fiscal",
+          "exoneration",
+          "droit de timbre"
+        ],
+        "variantes": [
+          "TVA pharmacie",
+          "éliminer les droits de timbre"
+        ],
+        "nb_tickets_estime": 7
+      },
+      "edition_affichage": {
+        "label": "Édition et Affichage",
+        "keywords": [
+          "impression",
+          "export PDF",
+          "affichage bouton",
+          "note d'honoraire",
+          "mise en page"
+        ],
+        "variantes": [
+          "exportation factures",
+          "facture électronique",
+          "papier en tête"
+        ],
+        "nb_tickets_estime": 11
+      }
+    },
+    "Comptabilite": {
+      "flux_integration": {
+        "label": "Flux et Intégrations Comptables",
+        "keywords": [
+          "intégration comptable",
+          "intégration paie",
+          "achat pharmacie",
+          "centralisation CA",
+          "intégration"
+        ],
+        "variantes": [
+          "intégration facture économat",
+          "intégration vente",
+          "intégration règlement fournisseur"
+        ],
+        "nb_tickets_estime": 20
+      },
+      "cloture_situation": {
+        "label": "Clôture et Arrêt de Situation",
+        "keywords": [
+          "clôture exercice",
+          "précloture",
+          "arrêt de situation",
+          "report AN",
+          "balance d'ouverture",
+          "clôture"
+        ],
+        "variantes": [
+          "transfert de solde",
+          "ouverture d'un nouveau exercice",
+          "soldes d'ouverture"
+        ],
+        "nb_tickets_estime": 12
+      },
+      "etats_financiers": {
+        "label": "États Financiers et Bilan",
+        "keywords": [
+          "bilan",
+          "état de résultat",
+          "liasse fiscale",
+          "flux de trésorerie"
+        ],
+        "variantes": [
+          "modèle des états financiers",
+          "paramétrage état résultat"
+        ],
+        "nb_tickets_estime": 9
+      },
+      "maintenance_comptes": {
+        "label": "Maintenance des Comptes",
+        "keywords": [
+          "lettrage",
+          "équilibrage balance",
+          "grand livre",
+          "doublon pièce",
+          "modification écriture",
+          "écriture comptable",
+          "pièce comptable",
+          "balance"
+        ],
+        "variantes": [
+          "balance non équilibrée",
+          "lettrage manuel",
+          "imputation comptable",
+          "journal comptable",
+          "journal des écritures"
+        ],
+        "nb_tickets_estime": 15
+      },
+      "declarations": {
+        "label": "Déclarations Fiscales et Sociales",
+        "keywords": [
+          "déclaration employeur",
+          "prorata TVA",
+          "loi de finances",
+          "retenue à la source",
+          "charges patronales"
+        ],
+        "variantes": [
+          "taux de prorata",
+          "réintégration de TVA"
+        ],
+        "nb_tickets_estime": 6
+      },
+      "immobilisations": {
+        "label": "Gestion des Immobilisations",
+        "keywords": [
+          "immobilisation",
+          "immobilisations",
+          "amortissement"
+        ],
+        "variantes": [
+          "liste des immobilisations",
+          "intégration immobilisation"
+        ],
+        "nb_tickets_estime": 2
+      }
+    }
+  },
+  "Support_Technique": {
+    "performance_acces": {
+      "label": "Performance et Accès",
+      "keywords": [
+        "lenteur système",
+        "accès refusé",
+        "mot de passe",
+        "dysfonctionnement",
+        "ne fonctionne pas"
+      ],
+      "nb_tickets_estime": 10
+    },
+    "bugs_systeme": {
+      "label": "Erreurs Système et Base de données",
+      "keywords": [
+        "erreur d'exécution",
+        "DBNETLIB",
+        "base de données",
+        "expiration du délai"
+      ],
+      "nb_tickets_estime": 4
+    }
+  },
+  "nouvelles_categories_proposees": [
+    {
+      "module": "Facturation",
+      "sous_theme": "gestion_examens_actes",
+      "justification": "Plusieurs tickets concernent spécifiquement des erreurs de saisie ou d'affichage d'actes radio, labo ou bloc indépendamment de la clôture."
+    },
+    {
+      "module": "Facturation",
+      "sous_theme": "facturation_electronique",
+      "justification": "Apparition de demandes spécifiques sur l'envoi et la formation aux factures électroniques."
+    }
+  ],
+  "tickets_ignores_bruit": 4
+}

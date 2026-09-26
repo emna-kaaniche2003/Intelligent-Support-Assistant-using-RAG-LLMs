@@ -1,0 +1,9 @@
+{
+  "chemin_source": "data_pipeline/raw/qr_technique__facturation__v1.json",
+  "collection_name": "connaissances_modules",
+  "module": "facturation",
+  "source_type": "qr_technique",
+  "modele_embedding": "paraphrase-multilingual-mpnet-base-v2",
+  "longueur_troncature_reponse": 400,
+  "taille_batch": 50
+}

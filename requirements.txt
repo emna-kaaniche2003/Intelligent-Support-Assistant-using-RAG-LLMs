@@ -1,0 +1,57 @@
+# ============================================================
+#  support-ia — Requirements
+#  Python  : 3.12.x OBLIGATOIRE (3.13+ non supporté par torch)
+#  Testé   : 20/07/2026 (S5 RAG evaluation + grid search RRF tuning) — zéro conflit confirmé
+# ============================================================
+
+
+
+# ── RAG : Vector DB ──────────────────────────────────────────
+qdrant-client==1.9.2               # Client Qdrant — doit matcher la version du serveur Docker
+
+# ── RAG : Embeddings multilingues ────────────────────────────
+sentence-transformers==5.6.0       # Modèle multilingue FR + arabe
+torch==2.12.1                      # PyTorch — compatible Python 3.12 ✓
+transformers==5.12.1               # Tokenizers HuggingFace (maj depuis 4.48)
+
+# ── LLM (Google Gemini via Vertex AI) ────────────────────────
+google-genai==2.10.0               # SDK unifié Google Gen AI (Gemini + Vertex AI)
+google-auth==2.55.0                # Authentification service account Google Cloud
+
+# ── Data pipeline ────────────────────────────────────────────
+pandas==2.2.3                      # Manipulation CSV / DataFrame
+openpyxl==3.1.5                    # Lecture fichiers Excel (.xlsx)
+beautifulsoup4==4.15.0             # Nettoyage balises HTML dans tickets bruts
+
+# ── Data pipeline : anonymisation des personnes (NER) ────────
+spacy==3.8.14                      # NER pour masquage des noms de personnes (anonymize_text)
+https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.8.0/fr_core_news_sm-3.8.0-py3-none-any.whl  # Modèle fr_core_news_sm (requiert spacy>=3.8.0,<3.9.0)
+
+
+# ── API Gateway ──────────────────────────────────────────────
+fastapi==0.138.0                   # API REST — point d'entrée webhook
+uvicorn[standard]==0.49.0          # Serveur ASGI pour FastAPI
+pydantic==2.13.4                   # Validation schémas (TicketInput etc.)
+
+# ── RAG : Hybrid search ──────────────────────────────────────
+rank-bm25==0.2.2                   # BM25 sparse retrieval
+numpy==2.2.6                       # Calculs RRF — compatible torch 2.12.1
+
+# ── RAG : Reranking cross-encoder (2e étage) ─────────────────
+# BAAI/bge-reranker-v2-m3 via sentence_transformers.CrossEncoder (déjà une
+# dépendance du projet, cf. ai_engine/rag/reranker.py) — FlagEmbedding testé
+# en premier (chemin nominal) mais incompatible à l'exécution avec
+# transformers==5.12.1 pinné ci-dessus (API tokenizer retirée en transformers
+# 5.x, jamais corrigée côté FlagEmbedding 1.4.0 = dernière release PyPI).
+
+# ── Utilitaires ──────────────────────────────────────────────
+httpx==0.28.1                      # Client HTTP async (appels internes)
+tqdm==4.68.3                       # Barres de progression ingestion Qdrant
+
+# ── Dev & Tests ──────────────────────────────────────────────
+jupyter==1.1.1                     # Notebooks pour audit des données
+ipykernel==7.3.0                   # Kernel Jupyter
+pytest==9.1.1                      # Tests unitaires
+python-multipart==0.0.32           # Upload fichiers audio (Agent 1, phase 2)
+
+pydantic-settings==2.14.2

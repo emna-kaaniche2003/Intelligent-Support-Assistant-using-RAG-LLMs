@@ -1,0 +1,27 @@
+# Machine virtuelle (Environnement Python)
+venv312/
+
+# Données et Pipeline (Fichiers bruts et nettoyés)
+data_pipeline/clean/
+data_pipeline/raw/
+
+# Données de test / Datasets sensibles
+tests/golden_dataset*.json
+
+# Fichiers de configuration ou variables d'environnement locaux (Optionnel mais recommandé)
+.env
+
+# Credentials Google Cloud (service account JSON — JAMAIS commités)
+credentials/*.json
+__pycache__/
+*.pyc
+
+qdrant_storage
+
+test_hf_api.py
+
+# Smoke test artifacts (local execution)
+smoke_test_agent4.py
+smoke_report*.md
+smoke_run*.log
+smoke_tickets*.json
