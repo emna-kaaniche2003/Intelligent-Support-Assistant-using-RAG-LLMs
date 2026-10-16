@@ -6,10 +6,9 @@ Intégrer l'Intelligence Artificielle dans la plateforme de support client pour 
 
 ### Contexte métier
 
-- **Plateforme** : SaaS médical + e-commerce (20+ modules)
-- **Équipe support** : 4 personnes responsables de modules spécifiques
+- **Plateforme** : SaaS médical + e-commerce 
 - **Défis abordés** :
-  - Tickets mal qualifiés (module)
+  - Tickets mal qualifiés
   - Demandes Formation qui auraient pu être autosuffisantes (documentation + vidéos disponibles)
   - Pas de pré-diagnostic automatique des bugs/anomalies
   - Temps moyen de réponse trop élevé
@@ -136,7 +135,7 @@ ai_engine/
 - Champs : `statutIa` (EN_ATTENTE/EN_COURS/A_VALIDER/ESCALADE/ERREUR_TECHNIQUE)
 - Champs : `statutValidation` (EN_ATTENTE/VALIDEE/MODIFIEE/REJETEE)
 - Champs métier : `draftReponse`, `fichesJson`, `top1Score`, `reponseFinale`, `validePar`, `valideLe`
-- Storage : SQL Server 2019+ (table `proposition_ia`)
+- Storage : SQL Server  (table `proposition_ia`)
 
 **Endpoints REST** (pas de contrôle de rôle MVP, escaladé post-MVP) :
 - `GET /api/propositions-ia/{idMessage}` — lecture (JSON : existe/draft/fiches/score)
@@ -157,7 +156,7 @@ relancer()
 
 ### Frontend (support-web-react)
 
-**Composant PropositionIAPanel** (E3.1, read-only) :
+**Composant PropositionIAPanel**  :
 - Emplacement : `src/Components/GestionDesDemandes/DemandeDetail.js` (intégration consolidée)
 - Affichage : draft, fiches top-3, score pertinence, boutons Valider/Rejeter/Relancer
 - Redux : `PropositionIAReducer`, actions LOADING/GET/ERROR/RESET
@@ -216,7 +215,6 @@ RAG_AUTOSEND_THRESHOLD=0.80  # Dans config.py
 **Statut branche code** :
 - Present : `if top1_score >= AUTOSEND_THRESHOLD` dans `agent4_trivial.py`
 - Executed : jamais (condition non satisfaite)
-- Réactivation : décision Cherif + ré-approbation métier, PAS un simple flag
 
 **Pourquoi non activé MVP** :
 - Chevauchement de distributions : score d'une réponse correcte (~0.72 max) vs incorrect (~0.598 max)
@@ -278,30 +276,6 @@ RAG_AUTOSEND_THRESHOLD=0.80  # Dans config.py
 - Actuellement : aucun contrôle code sur endpoints (protection = réseau/déploiement)
 - Requis : UserDetailsService réel, principal custom, règles `authorizeHttpRequests`
 - Statut : non résolu au MVP (hors périmètre stage)
-
----
-
-## ⚠️ Limites Connues & Dettes Assumées
-
-### Sécurité — Protections structurelles, pas applicatives
-
-- **RBAC absent** : Endpoints validé/rejeter/relancer accessibles sans authentification au niveau code
-  - Protection : isolation réseau (accès interne corporate only) + authentification HTTP préalable
-  - Prérequis validation : confirmer firewall/VPN (bloque go-live E3.2 si faux)
-- **`validePar` falsifiable** : Traçabilité au niveau `idUser` fourni par l'appelant, pas revalidée serveur
-  - Limitation acceptée : amélioration post-MVP via RBAC
-
-### Déploiement — Intégration réseau supposée
-
-- **FastAPI** : endpoint sans authentification API (clé, Bearer token)
-  - Supposition : accès limité au réseau corporate
-  - Validation : à confirmer auprès de l'infra avant go-live
-
-### Preuves empiriques
-
-- **E3.1 validation** : Redux DevTools historique conservé sur tickets 124279 (validation réussie) / 124280 (chemin d'erreur)
-  - État réel : statut A_VALIDER, draft peuplé, EN_ATTENTE (pas d'envoi)
-  - Pas une capture écran, mais observable dans la session DevTools applicative
 
 ---
 
@@ -413,9 +387,9 @@ docker run -d --name qdrant -p 6333:6333 -p 6334:6334 \
 ```bash
 # Copier .env.example → .env
 GOOGLE_APPLICATION_CREDENTIALS=credentials/gemini_sa.json
-GEMINI_PROJECT=clinisys-ai-assistant
-GEMINI_LOCATION=us-central1
-GEMINI_MODEL=gemini-2.5-flash-lite
+GEMINI_PROJECT=
+GEMINI_LOCATION=
+GEMINI_MODEL=
 QDRANT_URL=http://localhost:6333
 QDRANT_COLLECTION=connaissances_modules
 EMBEDDING_MODEL=paraphrase-multilingual-mpnet-base-v2
@@ -452,8 +426,6 @@ python check_env.py
 
 ## 📝 Documentation & Références
 
-- **CLAUDE.md** : Documentation technique du codebase (architecture, pipeline data, RAG, Agent 4)
-- **DECISIONS.md** : Registre de décisions (rationale figée, audits, seuils finalisés)
 - **Docs Vertex AI** : https://cloud.google.com/vertex-ai/docs
 - **Docs Qdrant** : https://qdrant.tech/documentation/
 - **Docs Gemini API** : https://googleapis.github.io/python-genai/
@@ -498,32 +470,6 @@ python data_pipeline/ingestion/create_collection.py
 python data_pipeline/ingestion/ingest_qr_technique.py --config data_pipeline/config/ingestion_config.json
 ```
 
----
-
-## 📌 Points de Contact
-
-- **Questions Agent 4 / RAG** : Consulter CLAUDE.md § Agent 4 / Évaluation RAG
-- **Questions intégration backend** : Consulter support-core/DECISIONS.md
-- **Questions intégration frontend** : Consulter support-web-react/DECISIONS.md
-- **Audit & métriques** : Rapport audit 2026-08-14 (disponible sur demande)
-
----
-
-**Dernière mise à jour** : 2026-08-14  
-**État MVP** : Agent 4 en validation. Round-trip front E3.1 prouvé (124279 = validation réussie, 124280 = chemin d'erreur). Go-live E3.2 bloqué par le RBAC applicatif (dette ouverte, hors périmètre stage).  
-**Prochaine étape** : Approbation métier / re-validation Cherif (autosend, seuil 0.60)
-
----
-
-## ✅ Validation Avant Déploiement E3.2
-
-- [ ] Confirmer protection réseau/auth (FastAPI sans auth code)
-- [ ] RBAC applicatif escaladé post-MVP (prérequis go-live)
-- [ ] Cherif re-valide autosend + seuil 0.60 sur données production
-- [ ] Support-core/support-web-react DECISIONS.md lus intégralement
-- [ ] Tests manuels E3.1/E3.2 complets (Redux DevTools conservé)
-- [ ] Preuve infra : scénarios de démonstration (validation réussie / chemin d'erreur)
-
----
+--
 
 **⚠️ Ceci est un MVP. Aucun envoi automatique n'est exécuté. Validation humaine obligatoire sur chaque réponse IA.**
